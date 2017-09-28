@@ -1,0 +1,47 @@
+{% extends "mybase.html" %}
+{% block queriesop2 %}
+<div class="container">
+     <div class="starter-template">
+       <div class="row" style="height:100vh;">
+               <div class="col-md-10 col-md-offset-1">
+                   <table class="table">
+                     <thead>
+                       <tr>
+                         <th>observationgroup</th>
+                         <th>grouphit</th>
+                         <th>source</th>
+                         <th>ra</th>
+                         <th>dec</th>
+                         <th>mjd</th>
+                         <th>filename1</th>
+                         <th>filename2</th>
+                         <th>filename3</th>
+                         <th>filename4</th>
+                         <th>filename5</th>
+                         <th>filename6</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       {% for val in output %}
+                       <tr>
+                         <td>{{val.observationgroup}}</td>
+                         <td>{{val.grouphit}}</td>
+                         <td>{{val.source}}</td>
+                         <td>{{val.ra}}</td>
+                         <td>{{val.dec}}</td>
+                         <td>{{val.mjd}}</td>
+                         <td>{{val.filename1}}</td>
+                         <td>{{val.filename2}}</td>
+                         <td>{{val.filename3}}</td>
+                         <td>{{val.filename4}}</td>
+                         <td>{{val.filename5}}</td>
+                         <td>{{val.filename6}}</td>
+                       </tr>
+                       {% endfor %}
+                     </tbody>
+                   </table>
+               </div>
+       </div>
+     </div>
+   </div>
+{% endblock %}
