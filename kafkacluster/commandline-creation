@@ -1,0 +1,42 @@
+/////////////////////////////////////////////////
+//Kafka cluster creation
+//Sarah L. Howell
+//Insight Data Engineering – SETI anomaly detection 
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+//Topic creation
+/////////////////////////////////////////////////
+
+//Start from the command line of any Kafka node.
+//Assumes Zookeeper and Kafka have been installed on 3 AWS instances.
+
+//This creates a GBT topic where all the signal data will be streamed to. Here we have a topic with 4 partitions to increase parallelized reads and writes:
+
+/usr/local/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --topic gbthits --partitions 4 --replication-factor 2
+
+//This creates other topics for other observatories. (currently unused)
+/usr/local/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --topic apfhits --partitions 4 --replication-factor 2
+/usr/local/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --topic observatory3hits --partitions 4 --replication-factor 2
+
+
+/////////////////////////////////////////////////
+//Checks
+/////////////////////////////////////////////////
+
+//This checks if the just created topics exist.
+/usr/local/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+//This describes the topics and who takes care of which partition.
+/usr/local/kafka/bin/kafka-topics.sh --describe --zookeeper localhost:2181
+
+
+/////////////////////////////////////////////////
+//Useful websites for Kafka cluster setup, configuration, installation:
+/////////////////////////////////////////////////
+
+// https://github.com/InsightDataScience/pegasus
+// https://github.com/InsightDataScience/data-engineering-ecosystem/wiki/Kafka
+// https://github.com/InsightDataScience/data-engineering-ecosystem/wiki/Kafka-advanced
+
