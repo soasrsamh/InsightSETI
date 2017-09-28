@@ -1,0 +1,84 @@
+/////////////////////////////////////////////////
+//cqlsh
+//Cassandra database cluster cql setup
+//Sarah L. Howell
+//Insight Data Engineering 2017 – SETI anomaly detection 
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+//Test and startup on any cassandra node
+/////////////////////////////////////////////////
+
+//This tests the status of the cluster.
+nodetool status
+
+//This start ups a cql command line
+cqlsh
+
+/////////////////////////////////////////////////
+//Keyspace creation
+/////////////////////////////////////////////////
+CREATE KEYSPACE hitPlayground WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};
+
+USE hitplayground;
+
+
+/////////////////////////////////////////////////
+//Table creation
+/////////////////////////////////////////////////
+
+//The hitInfo table contains all the signals (and signal properties) for each observation group and observation order. 
+//This table was designed with observationgroup and observationorder as the key, since the most common expected query on this table would be: give me all the information about the signals for a given observation group and observation order.
+//About the data: 
+//Observations are measured in sets of 6, alternating between pointing the telescope ON a target and pointing the telescope just OFF of the target. 
+//Observationgroup is the id number for each set of 6 observations. 
+//Observationorder is the id number (1-6) of the observation within an observationgroup of 6 observations. Odd observationorder are ON and even are OFF.
+//Each observationgroup, observationorder, and frequency will define a unique signal.
+//frequency is the emission frequency of the signal.
+//SNR is the signal to noise ratio.
+//driftRate is the Doppler drift rate of the signal.
+//uncorrectedFrequency is the uncorrected frequency of the signal.
+
+CREATE TABLE hitInfo (observationGroup int, observationOrder int, frequency double, SNR double, driftRate double, uncorrectedFrequency double, PRIMARY KEY ((observationGroup, observationOrder), SNR, driftRate, frequency)) WITH CLUSTERING ORDER BY (SNR desc, driftRate desc);
+
+
+//The groupInfo table contains information about the observationgroups.
+//The observervationgroup is the id number for each set of 6 observations. 
+//The groupHit value is the number of anomalous signals detected for a given group.
+//source is the star or galaxy or astronomical object target name. 
+//MJD is the Modified Julian Date.
+//RA and DEC are analogous to latitude and longitude of the source except in an astronomical coordinate frame of reference.
+//filenames1-6 are the corresponding .h5 or .fil files for the 6 observations in this observationgroup.
+
+CREATE TABLE groupInfo (observationGroup int, groupHit int, source text, MJD double, RA text, DEC text,filename1 text, filename2 text, filename3 text,  filename4 text, filename5 text, filename6 text,   PRIMARY KEY ((observationGroup)));
+
+/////////////////////////////////////////////////
+//Manually insert data into tables
+/////////////////////////////////////////////////
+
+//Here is an example for testing to manually enter data into hitInfo.
+INSERT INTO hitInfo (observationGroup, observationOrder, frequency,SNR,driftRate,uncorrectedFrequency) VALUES (2,1, 2, 30,0.5,2) ;
+
+//Here is an example for testing to manually enter data into groupInfo.
+INSERT INTO groupInfo (observationGroup, groupHit, source, MJD, RA, DEC, filename1, filename2, filename3, filename4, filename5, filename6) VALUES (2, 1, 'Alpha centauri', 740, '2.2', '3.2', 'file2-1', 'file2-2', 'file2-3', 'file2-4', 'file2-5', 'file2-6') ;
+
+/////////////////////////////////////////////////
+//A few simple queries
+/////////////////////////////////////////////////
+
+//This will retrieve all the signal information about a given observation.
+Select * from hitInfo where observationgroup = 1 and observationorder =1;
+
+//This will retrieve all the group information (not signal information) for any observation group with a source of the star Sirius.
+//While allow filtering is not usually good practice, this table was designed to be small, so it won’t take long to search through the whole dataset.
+Select * from groupInfo where source='Sirius' allow filtering;
+
+//This will retrieve most group information for observations that have anomalous signals (grouphit>0).
+//Again while allow filtering is not usually good practice, this table was designed to be small, so it won’t take long to search through the whole dataset.
+Select observationGroup, groupHit, source, MJD, RA, DEC from groupInfo where groupHit > 0 allow filtering;
+
+/////////////////////////////////////////////////
+//Exit cql command line
+/////////////////////////////////////////////////
+exit
