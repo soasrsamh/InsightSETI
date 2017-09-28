@@ -1,0 +1,29 @@
+/////////////////////////////////////////////////
+//Producer
+//Sending randomly generated signal data like from the GBT
+//Sarah L. Howell
+//Insight Data Engineering 2017 – SETI anomaly detection 
+/////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////
+// Start and stop multiple producers from the command line
+/////////////////////////////////////////////////
+
+//This will spawn 4 producers from a machine all in parallel. This simulates 4 different data sources using tmux. This will create a new session that also contains that number of windows based on the argument sent into the script.
+//bash spawn_kafka_streams.sh <KAFKA_BROKER_PUBLIC_IP> <NUM_SPAWNS> <SESSION_NAME>
+
+bash spawn_kafka_streams.sh [insert my kafka ip address here] 4 k1
+
+//To stop your producers from producing
+tmux kill-session -t k1
+
+
+
+/////////////////////////////////////////////////
+// Useful links for producer tools installation
+/////////////////////////////////////////////////
+
+// https://github.com/InsightDataScience/pegasus
+// https://github.com/InsightDataScience/data-engineering-ecosystem/wiki/Kafka-advanced
+
