@@ -26,7 +26,7 @@ import org.apache.spark.ml.linalg.Vectors
 
 
 //to run:
-//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=[cassandra ip insert here]
+//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=[insert here cassandra cluster ip]
 // --packages datastax:spark-cassandra-connector:2.0.1-s_2.11 -i ~/range-join-project/src/main/scala/groupHitTest.scala
 
 
@@ -292,7 +292,7 @@ println("group number")
 println(og)
 
 //val og = 12
-val pmrange = 10
+//val pmrange = 10
 val pmrangeoff = 1
 val snron = 0.2
 val snroff = 0.1
@@ -354,7 +354,7 @@ output.select("hour","features").show(false)
 
 
 
-
+/***
 //measurement1 convert to [id, feature vector] format
 val assembler1 = new VectorAssembler()
   .setInputCols(Array("nfrequency", "nsnr", "ndriftrate"))
@@ -396,8 +396,8 @@ println(aftervectorize)
 //Bucketed Random Projection accepts arbitrary vectors as input features, and supports both sparse and dense vectors.
 
 val brp2 = new BucketedRandomProjectionLSH()
-  .setBucketLength(.001)
-  .setNumHashTables(4)
+  .setBucketLength(.0002)
+  .setNumHashTables(2)
   .setInputCol("features")
   .setOutputCol("hashes")
 
@@ -429,7 +429,7 @@ res1.show()
 //    col("datasetB.observationgroup").alias("observationgroupB"),col("datasetB.observationorder").alias("observationorderB"),col("datasetB.frequency").alias("frequencyB"),
 //    col("EuclideanDistance"))
 
-
+***/
 
 
 
@@ -528,7 +528,17 @@ model.approxSimilarityJoin(dfA, dfB, 1.5, "EuclideanDistance")
 //    (measurements1("frequency") <= measurements3("frequency") + lit(pmrange))
 //)
 
-
+val pmrange = 0.0001
+val res1 = measurements1.join(measurements3,
+    ( (measurements1("frequency")-measurements3("frequency"))*(measurements1("frequency")-measurements3("frequency")) +
+      (measurements1("snr")-measurements3("snr"))*(measurements1("snr")-measurements3("snr")) +
+      (measurements1("driftrate")-measurements3("driftrate"))*(measurements1("driftrate")-measurements3("driftrate"))
+      > lit(-1*pmrange) ) && ( lit(pmrange) >= 
+      (measurements1("frequency")-measurements3("frequency"))*(measurements1("frequency")-measurements3("frequency")) +
+      (measurements1("snr")-measurements3("snr"))*(measurements1("snr")-measurements3("snr")) +
+      (measurements1("driftrate")-measurements3("driftrate"))*(measurements1("driftrate")-measurements3("driftrate")) )
+    )
+res1.show
 
 /***
 res1 match {
@@ -543,7 +553,7 @@ println("before count")
 //println(Calendar.getInstance().getTime())
 afterjoin = System.currentTimeMillis()
 println(afterjoin)
-println(afterjoin-aftervectorize)
+println(afterjoin-afterload)
 
 
 println(res1.count)
@@ -552,7 +562,7 @@ println("after count")
 //println(Calendar.getInstance().getTime())
 aftercount = System.currentTimeMillis()
 println(aftercount)
-println(aftercount-aftervectorize)
+println(aftercount-afterload)
 
 
 
