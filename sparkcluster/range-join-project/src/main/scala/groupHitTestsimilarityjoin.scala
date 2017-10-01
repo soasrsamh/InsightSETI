@@ -31,7 +31,7 @@ import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.linalg.Vectors
 
 //to run:
-//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=ec2-35-165-134-68.us-west-2.compute.amazonaws.com
+//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=[insert cassandra host]
 // --packages datastax:spark-cassandra-connector:2.0.1-s_2.11 -i ~/range-join-project/src/main/scala/groupHitTestsimilarityjoin.scala
 
 // Time tracking variables (in milliseconds)
