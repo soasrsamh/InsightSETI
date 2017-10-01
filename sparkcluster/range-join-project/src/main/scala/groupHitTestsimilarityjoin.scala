@@ -31,7 +31,7 @@ import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.linalg.Vectors
 
 //to run:
-//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=[insert cassandra host]
+//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=ec2-35-165-134-68.us-west-2.compute.amazonaws.com
 // --packages datastax:spark-cassandra-connector:2.0.1-s_2.11 -i ~/range-join-project/src/main/scala/groupHitTestsimilarityjoin.scala
 
 // Time tracking variables (in milliseconds)
@@ -71,35 +71,26 @@ measurements1.show
 measurements3.show
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Convert features to a column of normalized vectors for each observation
+// Convert features of both observations to new columns of normalized feature vectors (each feature ranging from 0 to 1).
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 println("after read measurments")
 afterload = System.currentTimeMillis()
 println(aftermeas)
 println(beforeload-afterload)
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Convert both observations to [id, feature vector] format and normalize the feature vectors to each range from 0 to 1.
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 val assembler1 = new VectorAssembler()
   .setInputCols(Array("nfrequency", "nsnr", "ndriftrate"))
   .setOutputCol("features")
-
 println("Observation 1:")
 val output1 = assembler1.transform(measurements1.withColumn("nfrequency", measurements1("frequency")*0.0001).withColumn("nsnr", measurements1("snr")*0.01).withColumn("ndriftrate", measurements1("driftrate")*1.0))
 output1.show
 
-//println("Assembled columns to vector column 'features'")
-//output1.select("features").show(false)
 
 //measurement3 convert to [id, feature vector] format
 val assembler3 = new VectorAssembler()
   .setInputCols(Array("nfrequency", "nsnr", "ndriftrate"))
   .setOutputCol("features")
-
 println("Observation 2:")
 val output3 = assembler3.transform(measurements3.withColumn("nfrequency", measurements3("frequency")*.0001).withColumn("nsnr", measurements3("snr")*.01).withColumn("ndriftrate", measurements3("driftrate")*1))
 output3.show
@@ -143,7 +134,7 @@ aftertrain = System.currentTimeMillis()
 println(aftertrain)
 println(aftertrain-aftervectorize)
 
-//The distance between two signal feature sets must be within this range to match (Hz)
+//The distance between two signal feature sets must be within this range to match
 val pmrange = 0.0001
 
 // Compute the locality sensitive hashes for the input rows, then perform approximate similarity join.
