@@ -1,12 +1,12 @@
 # SETI Breakthrough Listen
-Streaming Detection of Extraterrestrial Anomalous Signals
+Streaming Detection of Anomalous Signals
 Insight Data Engineering Fellow September 2017
 
 
-Over the last couple weeks, I built a streaming anomalous signal detection pipeline for high level SETI signal data. 
+Over three weeks, I built a streaming anomalous signal detection pipeline for high level SETI signal data. 
 SETI is the organization that searches for extraterrestrial signals. 
 
-Figure 1:
+![alt text](https://raw.githubusercontent.com/soasrsamh/InsightSETI/master/photos/pipeline.png)
 
 Stream processing is motivated by the value that repeated observations of anomalous signals can bring. 
 Real-time notifications would give researchers the option to immediately re-measure stars that have been identified as anomalous. 
