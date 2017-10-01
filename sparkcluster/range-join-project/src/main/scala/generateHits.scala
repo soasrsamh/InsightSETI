@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////// 
 // Generates random signals for benchmarking tests. 
-// Saves the signals to a cassandra table.
+// Saves groups of signals (with different numbers of signals) to a cassandra table.
 /////////////////////////////////////////////////////////////////////////////////////////////// 
 
 
@@ -23,7 +23,7 @@ import com.datastax.spark.connector.cql.CassandraConnectorConf
 import com.datastax.spark.connector.rdd.ReadConf
 
 //to run:
-//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=[insert cassandra ip] --packages datastax:spark-cassandra-connector:2.0.1-s_2.11 -i ~/range-join-project/src/main/scala/generateHits.scala
+//$SPARK_HOME/bin/spark-shell --conf spark.cassandra.connection.host=[insert cassanda host] --packages datastax:spark-cassandra-connector:2.0.1-s_2.11 -i ~/range-join-project/src/main/scala/generateHits.scala
 
 
 
@@ -32,7 +32,6 @@ import com.datastax.spark.connector.rdd.ReadConf
 /////////////////////////////////////////////////////////////////////////////////////////////// 
 
 case class MeasurementHits(observationgroup:Int, observationorder:Int, frequency:Double, snr:Double, driftrate:Double, uncorrectedfrequency:Double)
-
 
 
 
