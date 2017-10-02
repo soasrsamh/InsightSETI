@@ -15,7 +15,7 @@ To this end, I built a streaming pipeline to ingest with Kafka high-level signal
 Customized Spark batch processing scripts can also be applied to the data stored in Cassandra. 
 Efficent distributed processing is important for these use cases.
 
-![AnomalousSignalCriteria](photos/anomalousSignalCriteria.png)
+![anomalousSignalCriteria](photos/anomalousSignalCriteria)
 
 The high-level signal data looks something like this: Each observation of a star has many signals and each signal has many properties.
 To be considered anomalous, a signal must first exceed simple threshold filters on Property2 and Property3.
